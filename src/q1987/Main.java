@@ -7,29 +7,30 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-	static int R, C, max;
+	static int R, C, dist;
 	static int[] dx = { 0, 0, -1, 1 };
 	static int[] dy = { -1, 1, 0, 0 };
 	static int[][] map;
-	static int[][] dist;
 	static boolean[] visited;
 
-	public static void DFS(Node n, boolean[] visited) {
-		int i, j, ax, ay;
+	public static void DFS(int x, int y, int r, boolean[] visited) {
+		int i, ax, ay;
+//		System.out.println(x + " " + y + " " + r + " " );
 		for (i = 0; i < 4; i++) {
-			ax = n.x + dx[i];
-			ay = n.y + dy[i];
+			ax = x + dx[i];
+			ay = y + dy[i];
 
 			if (ax < 0 || ax >= R || ay < 0 || ay >= C) continue;
 			if (visited[map[ax][ay]]) continue;
-			dist[ax][ay] = dist[n.x][n.y] + 1;
 
-			max = (dist[ax][ay] > max) ? dist[ax][ay] : max;
-
+			r++;
 			visited[map[ax][ay]] = true;
-			DFS(new Node(ax, ay), visited);
+			DFS(ax, ay, r, visited);
+			r--;
 			visited[map[ax][ay]] = false;
 		}
+		
+		dist = (r > dist) ? r : dist;
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -42,8 +43,6 @@ public class Main {
 		C = Integer.parseInt(st.nextToken());
 		map = new int[R][C];
 		visited = new boolean[26];
-		dist = new int[R][C];
-		max = 1;
 		for (i = 0; i < R; i++) {
 			String line = in.readLine();
 			for (j = 0; j < C; j++) {
@@ -51,20 +50,10 @@ public class Main {
 			}
 		}
 
-		dist[0][0] = 1;
 		visited[map[0][0]] = true;
 
-		DFS(new Node(0, 0), visited);
-		System.out.println(max);
+		DFS(0,0,1,visited);
+		System.out.println(dist);
 		in.close();
-	}
-
-	static class Node {
-		int x, y;
-
-		Node(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
 	}
 }
